@@ -214,7 +214,7 @@ const DEFAULT_SETTINGS = {
   heroMode: 'video',
   heroPhotos: ['fennville-patio', 'farm-front', 'saugatuck-drone', 'pool-wide', 'farm-living', 'muskegon-front'],
   heroVideo: '',
-  heroClip: 'mix',
+  heroClip: 'random',
   clipStart: 'random',
   navClick: 'hub',
   headings: 'accent',
