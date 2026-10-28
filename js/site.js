@@ -304,7 +304,7 @@ function heroHome() {
       <p class="hero-sub">${EV('sub')}</p>
       <div class="hero-btns"><a class="btn btn-light" href="#/contact">${EV('button')}</a><a class="link-light" href="#/projects">${E('hero.button2')}</a></div>
     </div>
-    ${s.heroMode === 'video' && !s.heroVideo ? (() => { const c = VIDEOS[clipId() === 'mix' ? Object.keys(VIDEOS)[0] : clipId()]; return `<div class="hero-meta"><p class="hero-cap"><b>${esc(c.place[0])}</b> ${esc(c.place[1])}</p></div>`; })() : ''}
+    ${s.heroMode === 'video' && !s.heroVideo ? (() => { const c = VIDEOS[firstClip()]; return `<div class="hero-meta"><p class="hero-cap"><b>${esc(c.place[0])}</b> ${esc(c.place[1])}</p></div>`; })() : ''}
     ${s.heroMode !== 'video' ? `<div class="hero-meta"><p class="hero-cap" aria-live="polite">${cap(ids[0])}</p>
       <div class="hero-dots">${ids.map((_, i) => `<button type="button" aria-label="Show photo ${i + 1}"${i === 0 ? ' aria-current="true"' : ''}></button>`).join('')}</div></div>` : ''}
   </section>`;
@@ -321,12 +321,20 @@ function heroVideo(url, fallbackId) {
 
 /* The built-in drone B-roll (a Spaces home in Holland). Phones get a lighter file,
    big screens a sharper one. The still frame shows until the video is playing. */
-const clipId = () => { const c = App.state.settings.heroClip; return c === 'mix' || VIDEOS[c] ? c : 'drone-holland'; };
+const clipId = () => { const c = App.state.settings.heroClip; return c === 'mix' || c === 'random' || VIDEOS[c] ? c : 'mix'; };
+// One random pick per visit: a new video each time the site is opened, but it stays put while you click around.
+const VISIT_PICK = Math.random();
+const firstClipIndex = () => {
+  const pick = clipId(), n = Object.keys(VIDEOS).length;
+  if (pick === 'random' || (pick === 'mix' && App.state.settings.clipStart !== 'first')) return Math.floor(VISIT_PICK * n);
+  return pick === 'mix' ? 0 : Object.keys(VIDEOS).indexOf(pick);
+};
+const firstClip = () => Object.keys(VIDEOS)[firstClipIndex()];
 const clipSize = () => { const w = $('#site').clientWidth || innerWidth; return w < 760 ? 540 : w * (devicePixelRatio || 1) <= 1600 ? 720 : 1080; };
 const clipSrc = id => `assets/video/${id}-${clipSize()}.mp4`;
 function droneVideo() {
   const pick = clipId();
-  const id = pick === 'mix' ? Object.keys(VIDEOS)[0] : pick;
+  const id = firstClip();
   const still = (navigator.connection && navigator.connection.saveData) || $('#site').dataset.motion === 'none';
   const poster = `assets/video/${id}-poster.jpg`;
   const v = (cls, src, loop) => `<video class="${cls}" src="${src}" muted ${loop ? 'loop ' : ''}playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>`;
@@ -752,7 +760,7 @@ function afterRender() {
 /* "Play them all": when one clip ends, the other video (already loaded) fades in with the next one. */
 function playInTurn(a, b) {
   const ids = Object.keys(VIDEOS);
-  let i = 0, cur = a, nxt = b;
+  let i = firstClipIndex(), cur = a, nxt = b;
   const cap = $('#site .hero-cap');
   const label = id => `<b>${esc(VIDEOS[id].place[0])}</b> ${esc(VIDEOS[id].place[1])}`;
   const queue = () => { nxt.src = clipSrc(ids[(i + 1) % ids.length]); nxt.load(); };

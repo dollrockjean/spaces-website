@@ -138,7 +138,9 @@ const PANELS = {
       ${mode === 'video'
         ? `<p class="ed-help">Pick the video that plays behind the headline. Each is a short, silent loop of a real Spaces home.</p>
            <div class="ed-clips">${Object.entries(VIDEOS).map(([k, c]) => `<button type="button" data-clip="${k}" aria-pressed="${!s().heroVideo && clipId() === k}"><img src="assets/video/${k}-poster.jpg" alt="" loading="lazy"><b>${c.name}</b><small>${c.note}</small></button>`).join('')}
-             <button type="button" class="mix" data-clip="mix" aria-pressed="${!s().heroVideo && clipId() === 'mix'}"><span class="mix-art">${Object.keys(VIDEOS).slice(0, 4).map(k => `<img src="assets/video/${k}-poster.jpg" alt="">`).join('')}</span><b>Play them all</b><small>One after another, with a soft fade</small></button></div>
+             <button type="button" class="mix" data-clip="mix" aria-pressed="${!s().heroVideo && clipId() === 'mix'}"><span class="mix-art">${Object.keys(VIDEOS).slice(0, 4).map(k => `<img src="assets/video/${k}-poster.jpg" alt="">`).join('')}</span><b>Play them all</b><small>One after another, with a soft fade</small></button>
+             <button type="button" class="mix" data-clip="random" aria-pressed="${!s().heroVideo && clipId() === 'random'}"><b>One random video</b><small>A different one each time someone opens the site, played on a loop</small></button></div>
+           ${clipId() === 'mix' && !s().heroVideo ? `<p class="ed-help">When playing them all, start with:</p>${seg('clipStart', [['random', 'A random video'], ['first', 'The first video']])}` : ''}
            <label class="ed-field">Or use your own video link<input type="url" data-input="settings.heroVideo" value="${esc(s().heroVideo)}" placeholder="YouTube, Vimeo or .mp4 link"></label>
            <p class="ed-help">A pasted link plays instead of the videos above. Clear it to go back.</p>`
         : `<p class="ed-help">Tap photos to add or remove them from the slideshow. The numbers show the order they play in.</p>
@@ -219,6 +221,8 @@ const PANELS = {
     const changes = changeList();
     return `<section><h3>Send your version to Rocco</h3><p class="ed-help">This saves everything you changed, plus your notes, as one small file. Rocco opens it and builds the next version from it.</p>
       <label class="ed-field">Name this version<input id="ed-vname" placeholder="For example: Tracy’s favorite" value=""></label>
+      <p class="ed-help">What should the file include?</p>
+      <div class="ed-seg" role="radiogroup">${[['all', 'Notes and design changes'], ['notes', 'Only my notes']].map(([v, l]) => `<button type="button" role="radio" data-send="${v}" aria-checked="${(Ed.sendWhat || 'all') === v}">${l}</button>`).join('')}</div>
       <div class="ed-row"><button type="button" class="ed-btn primary" data-act="email">Email it to Rocco</button><button type="button" class="ed-btn" data-act="download">Just download the file</button></div>
       <p class="ed-help">“Email it” downloads the file and opens a new email with your notes already written. Just attach the downloaded file and press send.</p></section>
     <section><h3>Save in this browser</h3><p class="ed-help">Keep a few versions here to compare. Open one any time.</p>
@@ -247,6 +251,7 @@ function bindPanel() {
       App.change(st => { st.settings[key] = val; });
       return;
     }
+    if (t.dataset.send) { Ed.sendWhat = t.dataset.send; drawBody(); return; }
     if (t.dataset.spot) {
       const k = t.dataset.spot;
       App.change(st => { st.settings.spotlight = k; st.settings.heroPhotos = [...SPOTLIGHTS[k].photos]; st.settings.heroClip = SPOTLIGHTS[k].clip; });
@@ -322,6 +327,7 @@ const ACTIONS = {
     const { file, data } = downloadVersion();
     const lines = [`Hi Rocco,`, ``, `Here is my version of the Spaces website${data.versionName ? `: ${data.versionName}` : ''}.`, `The file “${file}” just downloaded to my computer. I attached it to this email.`, ``];
     if (data.notes.length) { lines.push('My notes:'); data.notes.forEach((n, i) => lines.push(`${i + 1}. [${n.pageName}${n.target ? ' / ' + n.target.label : ''}] ${n.text}`)); lines.push(''); }
+    if (data.kind === 'notes') lines.push('(This file has my notes only, no design changes.)', '');
     if (data.changes.length) { lines.push('What I changed:'); data.changes.slice(0, 25).forEach(c => lines.push('- ' + c)); lines.push(''); }
     lines.push('Thanks!', App.state.author || '');
     let body = lines.join('\n');
@@ -550,20 +556,23 @@ function putVersions(v) {
   try { localStorage.setItem(VERSIONS_KEY, JSON.stringify(v)); return true; }
   catch (e) { toast('No room left to save here. Download the file instead, or delete an old version.'); return false; }
 }
+// "Only my notes" sends just the notes; "Notes and design changes" sends the whole version.
 function downloadVersion() {
   const name = ($('#ed-vname') && $('#ed-vname').value.trim()) || '';
   const stamp = new Date().toISOString().slice(0, 10);
+  const notesOnly = Ed.sendWhat === 'notes';
   const data = {
     app: 'spaces-designer-homes-site',
     format: 1,
+    kind: notesOnly ? 'notes' : 'version',
     versionName: name,
     exportedAt: new Date().toISOString(),
     by: App.state.author,
-    changes: changeList(),
+    changes: notesOnly ? [] : changeList(),
     notes: App.state.notes,
-    state: App.state,
   };
-  const file = `Spaces-website-${(name || 'my-version').replace(/[^\w-]+/g, '-')}-${stamp}.json`;
+  if (!notesOnly) data.state = App.state;
+  const file = `Spaces-website-${notesOnly ? 'notes' : 'version'}-${(name || App.state.author || 'mine').replace(/[^\w-]+/g, '-')}-${stamp}.json`;
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
   a.download = file;
@@ -577,6 +586,14 @@ function importFile(f) {
   r.onload = () => {
     try {
       const d = JSON.parse(r.result);
+      // A notes-only file adds its notes to what is open now and changes nothing else.
+      if (!d.state && Array.isArray(d.notes)) {
+        const have = new Set(App.state.notes.map(n => n.id));
+        const add = d.notes.filter(n => n && n.text && !have.has(n.id)).map(n => ({ ...n, text: String(n.text).slice(0, 2000) }));
+        App.change(st => { st.notes.push(...add); }, { render: false });
+        toast(`Added ${add.length} note${add.length === 1 ? '' : 's'}${d.by ? ` from ${d.by}` : ''}.`);
+        return;
+      }
       const st = d.state || d;
       if (!st.settings || !st.content) throw new Error('not a version file');
       App.replace(st);
@@ -598,7 +615,8 @@ function changeList() {
   if (cur.motion !== d.motion) out.push(`Animations: ${{ full: 'Full', min: 'Minimum', none: 'None' }[cur.motion]}`);
   if (cur.heroMode !== d.heroMode) out.push(`Top of home page: ${cur.heroMode === 'video' ? 'drone video' : 'photo slideshow'}`);
   if (cur.heroVideo) out.push(`Top video link: ${cur.heroVideo}`);
-  if (cur.heroClip !== d.heroClip) out.push(`Top video: ${cur.heroClip === 'mix' ? 'play them all' : (VIDEOS[cur.heroClip] || {}).name}`);
+  if (cur.heroClip !== d.heroClip) out.push(`Top video: ${cur.heroClip === 'mix' ? 'play them all' : cur.heroClip === 'random' ? 'one random video' : (VIDEOS[cur.heroClip] || {}).name}`);
+  if (cur.clipStart !== d.clipStart) out.push('Play them all: starts with the first video');
   if (cur.clientVideo) out.push(`Client video link: ${cur.clientVideo}`);
   const named = { headings: ['Headline style', { accent: 'gold accent', photo: 'on photos', plain: 'plain' }], linkStyle: ['Small links', { buttons: 'buttons', text: 'text links' }], navClick: ['Menu headings', { hub: 'overview page', first: 'first page' }], stickyContact: ['Phone contact bar', { on: 'shown', off: 'hidden' }], projectView: ['Our Projects pages', { folders: 'room folders', tags: 'all photos with tags' }] };
   Object.entries(named).forEach(([k, [label, vals]]) => { if (cur[k] !== d[k]) out.push(`${label}: ${vals[cur[k]] || cur[k]}`); });
