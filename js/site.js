@@ -420,7 +420,10 @@ const SECTION_RENDER = {
   contact() { return contactBlock(); },
 };
 
-const postCard = (p, i) => `<a class="post-card" href="#/blog/${p.id}">${I(`content.posts.${i}.photo`, '', false, SIZES.third)}<span class="post-date">${fmtDate(p.date)}</span><span class="post-title">${esc(p.title)}</span><span class="post-ex">${esc(p.excerpt)}</span></a>`;
+const postCard = (p, i) => `<a class="post-card" href="#/blog/${p.id}" data-post="${i}">${I(`content.posts.${i}.photo`, '', false, SIZES.third)}<span class="post-date">${fmtDate(p.date)}${p.topic ? ` · ${esc(p.topic)}` : ''}</span><span class="post-title">${esc(p.title)}</span><span class="post-ex">${esc(p.excerpt)}</span></a>`;
+
+/* The Sheet script only accepts these, so a bot that makes up its own answer is dropped. */
+const KIND_CHOICES = ['A new custom home', 'An addition', 'A remodel', 'Not sure yet'];
 
 function contactBlock() {
   const tel = T('biz.phone').replace(/\D/g, '');
@@ -435,8 +438,9 @@ function contactBlock() {
       <label>Your name<input name="name" autocomplete="name" required maxlength="100"></label>
       <label>Email<input name="email" type="email" autocomplete="email" required maxlength="150"></label>
       <label><span>Phone <span class="opt">(optional)</span></span><input name="phone" type="tel" autocomplete="tel" maxlength="30"></label>
+      <label>Where is your property or lot?<input name="place" autocomplete="address-level2" placeholder="City or township" required maxlength="80"></label>
       <label class="hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
-      <label>What are you planning?<select name="kind"><option>A custom home</option><option>An addition</option><option>A remodel</option><option>Not sure yet</option></select></label>
+      <label class="full">What are you planning?<select name="kind" required><option value="">Choose one</option>${KIND_CHOICES.map(k => `<option>${k}</option>`).join('')}</select></label>
       <label class="full">Tell us a little about it<textarea name="msg" rows="4" maxlength="2000"></textarea></label>
       <button class="btn btn-solid full" type="submit">${E('contact.button')}</button>
       <p class="form-note full">No pressure and no sales pitch. Prefer to talk? Call <a href="tel:${tel}">${esc(T('biz.phone'))}</a>.</p>
@@ -577,6 +581,35 @@ function initProjects() {
     $('.proj-results', site).addEventListener('click', e => { if (e.target.closest('.clear-search')) { input.value = ''; kind = null; $$('.chip[data-kind]', site).forEach(x => x.setAttribute('aria-pressed', 'false')); run(); } });
     run();
   }
+  // Blog search and topics: hides the posts that don't match, so the editor's photo links stay in place.
+  const bsearch = $('#bsearch', site);
+  if (bsearch) {
+    const list = $('.blog-list', site), count = $('.result-count', list);
+    let topic = null;
+    const run = () => {
+      const words = bsearch.value.toLowerCase().split(/\s+/).filter(Boolean);
+      let n = 0;
+      $$('[data-post]', list).forEach(card => {
+        const p = T('posts')[+card.dataset.post];
+        const hay = `${p.title} ${p.excerpt} ${p.body} ${p.topic || ''}`.toLowerCase();
+        const hit = (!topic || p.topic === topic) && words.every(w => hay.includes(w));
+        card.hidden = !hit; n += hit;
+      });
+      count.innerHTML = !words.length && !topic ? ''
+        : n ? `${n} post${n > 1 ? 's' : ''}` : `No posts about that yet. <button type="button" class="linkish clear-search">Show all posts</button>`;
+    };
+    bsearch.addEventListener('input', run);
+    list.addEventListener('click', e => {
+      if (e.target.closest('.clear-search')) { bsearch.value = ''; topic = null; }
+      else {
+        const c = e.target.closest('.chip[data-topic]');
+        if (!c) return;
+        topic = topic === c.dataset.topic ? null : c.dataset.topic;
+      }
+      $$('.chip[data-topic]', list).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.topic === topic)));
+      run();
+    });
+  }
   // Room tags on a house page (when rooms are shown all at once).
   const chips = $('.room-chips', site);
   if (chips) chips.addEventListener('click', e => {
@@ -613,6 +646,8 @@ function teamPage(id) {
   </section>` + contactBlock();
 }
 
+const blogTopics = () => [...new Set(T('posts').map(p => p.topic).filter(Boolean))];
+
 function blogPage(id) {
   const posts = T('posts');
   if (id) {
@@ -629,6 +664,10 @@ function blogPage(id) {
   }
   return `<section class="sec blog-list" data-sec="blog-list" data-label="Blog list">
     <h1 class="h-lg">The Spaces Blog</h1><p class="lede">Plain answers about building, remodeling and living well in West Michigan. Video posts are on the way.</p>
+    <label class="search"><span class="sr">Search the blog</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input type="search" id="bsearch" placeholder="Try cost, budget or framing" autocomplete="off"></label>
+    <div class="chips" role="group" aria-label="Blog topics">${blogTopics().map(t => `<button type="button" class="chip" data-topic="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')}</div>
+    <p class="result-count" role="status"></p>
     <div class="post-grid">${posts.map((p, i) => postCard(p, i)).join('')}</div>
   </section>`;
 }
@@ -752,7 +791,7 @@ function afterRender() {
   let rv = 0;
   const showRev = n => { revs[rv].classList.remove('on'); rv = (n + revs.length) % revs.length; revs[rv].classList.add('on'); $('.rev-count', site).textContent = `${rv + 1} / ${revs.length}`; };
   if (revs.length) { $('.rev-prev', site).onclick = () => showRev(rv - 1); $('.rev-next', site).onclick = () => showRev(rv + 1); }
-  if (App.route.name === 'projects') initProjects();
+  if (App.route.name === 'projects' || App.route.name === 'blog') initProjects();
   styleHeadings(site);
   updateHeader();
 }
@@ -836,8 +875,12 @@ async function sendForm(form, msg) {
   if (Date.now() - last < 60000) { msg.textContent = 'Thanks, we already have your message. Please wait a minute before sending another.'; return; }
   const data = {
     name: clean(f.get('name'), 100), email: clean(f.get('email'), 150).toLowerCase(), phone: clean(f.get('phone'), 30).replace(/[^0-9+()\-. ]/g, ''),
-    kind: clean(f.get('kind'), 40), message: clean(f.get('msg'), 2000), form: form.classList.contains('notify') ? 'university' : 'contact',
+    place: clean(f.get('place'), 80), kind: clean(f.get('kind'), 40), message: clean(f.get('msg'), 2000), form: form.classList.contains('notify') ? 'university' : 'contact',
   };
+  if (data.form === 'contact') {
+    const missing = !data.name ? 'name' : !data.place ? 'place' : !KIND_CHOICES.includes(data.kind) ? 'kind' : '';
+    if (missing) { msg.textContent = { name: 'Please add your name.', place: 'Please tell us the city or township of your property or lot.', kind: 'Please choose what you are planning.' }[missing]; form.elements[missing].focus(); return; }
+  }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email)) { msg.textContent = 'Please check your email address.'; return; }
   if (!FORM_ENDPOINT) { msg.textContent = 'Thanks! This is a preview, so nothing was sent yet. On the live site this goes straight to the Spaces team.'; form.reset(); return; }
   msg.textContent = 'Sending…';
@@ -904,7 +947,11 @@ function bindSite() {
     e.preventDefault();
     const form = e.target;
     const msg = $('.form-msg', form);
-    if (!form.checkValidity()) { msg.textContent = 'Please add your name and a valid email so we can reply.'; form.reportValidity(); return; }
+    const bad = form.querySelector(':invalid');
+    if (bad) {
+      msg.textContent = bad.type === 'email' && bad.value ? 'Please check your email address.' : `Please fill in “${bad.closest('label').innerText.split('\n')[0].trim()}” so we can reply.`;
+      form.reportValidity(); return;
+    }
     sendForm(form, msg);
   });
   document.addEventListener('keydown', e => {

@@ -204,17 +204,18 @@ const SPOTLIGHTS = {
   remodel: { name: 'Remodels & additions', clip: 'southhaven', photos: ['remodel-kitchen', 'pool-house', 'remodel-shower', 'sunroom', 'remodel-mud', 'pool-living'] },
 };
 
+/* Defaults follow Tim Lamson's "1st Pass Items" version (2026-10-28). */
 const DEFAULT_SETTINGS = {
-  theme: 'heritage',
+  theme: 'gallery',
   fonts: 'brand',
-  logo: 'horizontal',
+  logo: 'badge',
   textSize: 'normal',
   corners: 'square',
   motion: 'full',
-  heroMode: 'video',
-  heroPhotos: ['fennville-patio', 'farm-front', 'saugatuck-drone', 'pool-wide', 'farm-living', 'muskegon-front'],
+  heroMode: 'slideshow',
+  heroPhotos: ['saugatuck-drone', 'muskegon-deck', 'muskegon-front', 'muskegon-living', 'lakefront-front', 'southhaven-wide'],
   heroVideo: '',
-  heroClip: 'random',
+  heroClip: 'holland-lake',
   clipStart: 'random',
   navClick: 'hub',
   headings: 'accent',
@@ -223,7 +224,7 @@ const DEFAULT_SETTINGS = {
   linkStyle: 'buttons',
   clientVideo: '',
   voice: 'you',
-  spotlight: 'all',
+  spotlight: 'lake',
   homeOrder: ['trust', 'intro', 'paths', 'featured', 'process', 'video', 'convictions', 'studio', 'blog', 'contact'],
   homeHidden: [],
 };
@@ -415,10 +416,14 @@ const DEFAULT_CONTENT = {
       body: 'Free classes and guides for anyone thinking about building or remodeling: how budgets really work, how to pick a lot, what to ask any builder, and more. Leave your email and we will tell you when the first class opens.',
     },
   },
+  /* Names and titles from Tim Lamson (2026-10-26). Alphabetical by last name for now. */
   team: [
-    { id: 'tracy', name: 'Tracy Anderson', role: 'Owner', photo: '', bio: 'Tracy leads Spaces and stays personally involved in every home, from the first design meeting to the final walkthrough.', email: 'info@spacesdesignerhomes.com' },
-    { id: 'beth', name: 'Beth', role: 'Design & Selections', photo: '', bio: 'Beth helps homeowners choose every finish in the Design Studio. Clients call her “so incredibly helpful and inspiring.”', email: 'info@spacesdesignerhomes.com' },
-    { id: 'doug', name: 'Doug', role: 'Construction', photo: '', bio: 'Doug keeps builds on schedule and on budget, and makes sure the work behind the walls is done right.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'tracy', name: 'Tracy Anderson', role: 'Founder / Owner', photo: '', bio: 'Tracy founded Spaces and stays personally involved in every home, from the first design meeting to the final walkthrough.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'beth', name: 'Beth Buskard', role: 'Design Selections Coordinator', photo: '', bio: 'Beth helps homeowners choose every finish in the Design Studio. Clients call her “so incredibly helpful and inspiring.”', email: 'info@spacesdesignerhomes.com' },
+    { id: 'bill', name: 'Bill Jarman', role: 'Construction Superintendent', photo: '', bio: 'Bill keeps builds on schedule and on budget, and makes sure the work behind the walls is done right.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'tim', name: 'Tim Lamson', role: 'Sales & Marketing', photo: '', bio: 'Tim leads sales and marketing at Spaces, and is glad to answer your first questions about building with us.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'doug', name: 'Doug Wickens', role: 'Project Developer', photo: '', bio: 'Doug is the Project Developer at Spaces Designer Homes.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'victoria', name: 'Victoria Willis', role: 'Permits & Inspections', photo: '', bio: 'Victoria handles permits and inspections, so the paperwork is right and your build keeps moving.', email: 'info@spacesdesignerhomes.com' },
   ],
   faq: [
     { q: 'How much does a custom home cost in West Michigan?', a: 'A nicely appointed 3,000 square foot custom home typically runs around $750,000 all-in, including design, site costs and finishes. We give you a clear picture of where your budget goes before you commit to anything.' },
@@ -429,9 +434,9 @@ const DEFAULT_CONTENT = {
     { q: 'What happens after I move in?', a: 'Our Keyholder Program: seasonal check-ins, a one-year walkthrough we schedule for you, and a direct line to the people who built your home for as long as you own it.' },
   ],
   posts: [
-    { id: 'what-does-it-cost', title: 'What does a custom home really cost in West Michigan?', date: '2026-10-14', photo: 'lowell-kitchen', excerpt: 'The honest number, and the three things that move it most.', body: 'A nicely appointed 3,000 square foot custom home in West Michigan typically runs around $750,000 all-in. Anyone who gives you a hard number before they understand your vision, your lot and your finishes is guessing.\n\nThree things drive the price, roughly in this order: your finishes and selections, your lot and the site work it needs, and how complex the design is. The same 3,000 square feet can swing six figures depending on what goes into it.\n\nThat is why we put real numbers on each of these before you commit. The price you approve should reflect decisions you made, not assumptions someone buried.' },
-    { id: 'behind-the-walls', title: 'What is behind the walls matters most', date: '2026-09-30', photo: 'springlake-stairs', excerpt: 'Why framing, waterproofing and mechanicals get the same care as the kitchen.', body: 'A home has hundreds of details nobody will ever photograph. Framing. Waterproofing. Mechanicals. These are the places where builders quietly cut corners to save money, and where problems show up two years later.\n\nWe treat that hidden work exactly like the work you can see. You should never have to wonder what is behind your walls.' },
-    { id: 'five-steps', title: 'Our five steps, from first idea to keys', date: '2026-09-12', photo: 'farm-living', excerpt: 'Vision, Plan & Budget, Guided Selections, Construction and Keyholder.', body: 'Every Spaces home follows the same five steps: Vision, Plan & Budget, Guided Selections, Construction and Keyholder.\n\nYou are never handed off to a stranger. The same team guides you through all of it, so by the time we break ground you already know what your home will look like, feel like and cost. Construction is almost the easy part.' },
+    { id: 'what-does-it-cost', topic: 'Cost & budget', title: 'What does a custom home really cost in West Michigan?', date: '2026-10-14', photo: 'lowell-kitchen', excerpt: 'The honest number, and the three things that move it most.', body: 'A nicely appointed 3,000 square foot custom home in West Michigan typically runs around $750,000 all-in. Anyone who gives you a hard number before they understand your vision, your lot and your finishes is guessing.\n\nThree things drive the price, roughly in this order: your finishes and selections, your lot and the site work it needs, and how complex the design is. The same 3,000 square feet can swing six figures depending on what goes into it.\n\nThat is why we put real numbers on each of these before you commit. The price you approve should reflect decisions you made, not assumptions someone buried.' },
+    { id: 'behind-the-walls', topic: 'Quality & craft', title: 'What is behind the walls matters most', date: '2026-09-30', photo: 'springlake-stairs', excerpt: 'Why framing, waterproofing and mechanicals get the same care as the kitchen.', body: 'A home has hundreds of details nobody will ever photograph. Framing. Waterproofing. Mechanicals. These are the places where builders quietly cut corners to save money, and where problems show up two years later.\n\nWe treat that hidden work exactly like the work you can see. You should never have to wonder what is behind your walls.' },
+    { id: 'five-steps', topic: 'Building process', title: 'Our five steps, from first idea to keys', date: '2026-09-12', photo: 'farm-living', excerpt: 'Vision, Plan & Budget, Guided Selections, Construction and Keyholder.', body: 'Every Spaces home follows the same five steps: Vision, Plan & Budget, Guided Selections, Construction and Keyholder.\n\nYou are never handed off to a stranger. The same team guides you through all of it, so by the time we break ground you already know what your home will look like, feel like and cost. Construction is almost the easy part.' },
   ],
 };
 

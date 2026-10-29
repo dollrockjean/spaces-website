@@ -4,15 +4,16 @@
  * Safety rules built in:
  * - It can only ADD a row. There is no code here that reads rows back or returns any sheet data.
  * - The Sheet stays private to Spaces. The website never sees it.
- * - Spam: hidden trap field, size limits, email check, and a cap on how many messages it accepts
- *   per hour overall and per email address.
- * - Everything typed is cleaned, and anything that could act as a spreadsheet formula is made plain text.
+ * - Spam: hidden trap field, size limits, email check, a fixed list of project types (bots that make up
+ *   their own are dropped), a required town, and a cap on how many messages it accepts per hour overall
+ *   and per email address. Messages with web links are saved but marked "Check: has a link" (phishing). * - Everything typed is cleaned, and anything that could act as a spreadsheet formula is made plain text.
  * - Alert email addresses are kept in Script Properties (Project Settings), not in this code,
  *   so they never appear in the public website files.
  */
 
 const SHEET = 'Messages';
-const HEADERS = ['Received', 'Form', 'Name', 'Email', 'Phone', 'Project type', 'Message', 'Status'];
+const HEADERS = ['Received', 'Form', 'Name', 'Email', 'Phone', 'Location', 'Project type', 'Message', 'Status'];
+const KINDS = ['A new custom home', 'An addition', 'A remodel', 'Not sure yet'];   // must match KIND_CHOICES in js/site.js
 const LIMITS = { perHour: 30, perEmailMinutes: 2 };
 
 // No reading allowed: a visit to the address only says it is working.
@@ -29,11 +30,14 @@ function doPost(e) {
       name: clean_(d.name, 100),
       email: clean_(d.email, 150).toLowerCase(),
       phone: clean_(d.phone, 30).replace(/[^0-9+()\-. ]/g, ''),
-      kind: clean_(d.kind, 40),
+      place: clean_(d.place, 80),
+      kind: pick_(d.kind, KINDS),
       message: clean_(d.message, 2000),
     };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(row.email)) return out_({ ok: false, error: 'email' });
     if (row.form === 'contact' && !row.name) return out_({ ok: false, error: 'name' });
+    if (row.form === 'contact' && (!row.kind || !row.place)) return out_({ ok: true });   // skipped the questions a person always answers: pretend it worked
+    const linky = /https?:\/\/|www\.|\b[a-z0-9-]+\.(?:ru|cn|xyz|top|click|link|info|biz)\b/i.test(row.message + ' ' + row.name);
 
     const cache = CacheService.getScriptCache();
     const hourKey = 'n' + Utilities.formatDate(new Date(), 'UTC', 'yyyyMMddHH');
@@ -45,12 +49,12 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
-      sheet_().appendRow([new Date(), row.form, safe_(row.name), safe_(row.email), safe_(row.phone), safe_(row.kind), safe_(row.message), 'New']);
+      sheet_().appendRow([new Date(), row.form, safe_(row.name), safe_(row.email), safe_(row.phone), safe_(row.place), safe_(row.kind), safe_(row.message), linky ? 'Check: has a link' : 'New']);
     } finally { lock.releaseLock(); }
     cache.put(hourKey, String(count + 1), 3600);
     cache.put(emailKey, '1', LIMITS.perEmailMinutes * 60);
 
-    alert_(row);
+    alert_(row, linky);
     return out_({ ok: true });
   } catch (err) {
     console.error(err);
@@ -82,12 +86,14 @@ function pick_(v, allowed) {
 }
 
 // Emails the people listed in Script Properties > ALERT_EMAILS (comma separated). Reply goes to the visitor.
-function alert_(row) {
+function alert_(row, linky) {
   const to = PropertiesService.getScriptProperties().getProperty('ALERT_EMAILS');
   if (!to) return;
-  const subject = row.form === 'university' ? 'Spaces University sign-up' : 'New website inquiry: ' + (row.kind || 'project') + ', ' + row.name;
+  const subject = row.form === 'university' ? 'Spaces University sign-up'
+    : (linky ? '[Check: has a link] ' : '') + 'New website inquiry: ' + (row.kind || 'project') + ', ' + row.name + (row.place ? ' (' + row.place + ')' : '');
   const body = [
-    'Name: ' + row.name, 'Email: ' + row.email, 'Phone: ' + (row.phone || '(none)'), 'Project: ' + (row.kind || '(none)'), '',
+    'Name: ' + row.name, 'Email: ' + row.email, 'Phone: ' + (row.phone || '(none)'), 'Location: ' + (row.place || '(none)'), 'Project: ' + (row.kind || '(none)'), '',
+    linky ? 'This message has a web link in it. Do not click links from people you do not know.\n' : '',
     row.message || '(no message)', '', 'Saved in the Spaces Website Messages sheet.',
   ].join('\n');
   MailApp.sendEmail({ to, subject, body, replyTo: row.email, name: 'Spaces website' });

@@ -310,6 +310,7 @@ h3 { font-family: var(--f-body); font-weight: 600; font-size: 1.06em; line-heigh
 /* Blog cards */
 .post-grid { display: grid; gap: 40px; }
 .site .post-card { text-decoration: none; display: grid; gap: 6px; align-content: start; }
+.post-card[hidden] { display: none; }
 .post-card img { width: 100%; aspect-ratio: 3/2; object-fit: cover; border-radius: var(--r); margin-bottom: 10px; }
 .post-date { font-size: .8em; font-weight: 500; color: var(--accent-ink); }
 .post-title { font-family: var(--f-head); font-size: 1.4em; line-height: 1.2; }
@@ -336,7 +337,7 @@ h3 { font-family: var(--f-body); font-weight: 600; font-size: 1.06em; line-heigh
 @container site (min-width: 900px) {
   .contact { grid-template-columns: 5fr 6fr; gap: 80px; }
   .contact-form { grid-template-columns: 1fr 1fr; padding: 40px; }
-  .contact-form .full, .contact-form label:nth-of-type(4) { grid-column: 1 / -1; }
+  .contact-form .full { grid-column: 1 / -1; }
 }
 .contact-page { padding-top: calc(var(--hdr) + var(--hdr-top)); background: var(--alt); }
 
