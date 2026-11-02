@@ -1,0 +1,7 @@
+{
+  "name": "spaces-site-build",
+  "private": true,
+  "type": "module",
+  "description": "Builds one page file per address, plus sitemap and robots. Run: node tools/build.mjs",
+  "dependencies": { "jsdom": "26.1.0" }
+}

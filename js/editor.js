@@ -310,7 +310,7 @@ const ACTIONS = {
     const box = $('#ed-note');
     const text = box.value.trim();
     if (!text) { box.focus(); return toast('Type your note first.'); }
-    const note = { id: Date.now().toString(36), text, route: location.hash || '#/', pageName: pageName(), target: Ed.pendingTarget, author: App.state.author, device: Ed.device, date: new Date().toISOString() };
+    const note = { id: Date.now().toString(36), text, route: routeHash(), pageName: pageName(), target: Ed.pendingTarget, author: App.state.author, device: Ed.device, date: new Date().toISOString() };
     Ed.pendingTarget = null;
     App.change(st => st.notes.push(note), { render: false });
     toast('Note added.');
@@ -519,7 +519,7 @@ function drawPins() {
   if (!layer) { layer = document.createElement('div'); layer.className = 'note-pins'; site.appendChild(layer); }
   layer.innerHTML = '';
   if (!Ed.open || !Ed.showPins) return;
-  const here = location.hash || '#/';
+  const here = routeHash();
   const sr = site.getBoundingClientRect();
   App.state.notes.forEach((n, i) => {
     if ((n.route || '#/') !== here || !n.target) return;
@@ -547,7 +547,7 @@ function showNote(i) {
     setTimeout(() => el.classList.remove('flash'), 2200);
     setTimeout(drawPins, 500);
   };
-  if ((location.hash || '#/') !== (n.route || '#/')) { location.hash = n.route; setTimeout(go, 150); } else go();
+  if (routeHash() !== (n.route || '#/')) { navigate(n.route); setTimeout(go, 150); } else go();
 }
 
 /* ---------- versions, export, import ---------- */

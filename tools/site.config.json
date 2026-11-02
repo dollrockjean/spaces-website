@@ -1,0 +1,6 @@
+{
+  "_help": "Preview on GitHub Pages. At launch on the real domain change to: origin https://spacesdesignerhomes.com, base /, index true. Then run node tools/build.mjs and push.",
+  "origin": "https://dollrockjean.github.io",
+  "base": "/spaces-website/",
+  "index": false
+}

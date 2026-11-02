@@ -22,6 +22,21 @@ const EDITOR_ON = (() => {
 })();
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* Real page addresses (spacesdesignerhomes.com/team/), so Google and answer engines can read each page.
+   BASE is where the site lives, from the <base> tag: "/" on the real domain, "/spaces-website/" on the preview.
+   Templates still write links as "#/team"; render() turns them into real addresses. Old "#/" links still work. */
+const BASE = new URL(document.baseURI).pathname.replace(/[^/]*$/, '');
+const cleanPath = p => String(p || '').replace(/^#?\/?/, '').replace(/[?#].*$/, '').replace(/index\.html$/, '').replace(/\/+$/, '');
+const pageUrl = p => { const c = cleanPath(p); return BASE + (c ? c + '/' : ''); };
+const currentPath = () => (location.pathname.startsWith(BASE) ? cleanPath(decodeURI(location.pathname.slice(BASE.length))) : '');
+const routeHash = () => '#/' + currentPath();   // how notes remember which page they are on
+function navigate(p) {
+  const url = pageUrl(p);
+  if (url !== location.pathname) history.pushState({}, '', url);
+  App.go();
+}
+const realLinks = html => html.replace(/href="#\/([^"]*)"/g, (m, p) => `href="${pageUrl(p)}"`);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const getPath = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
 const setPath = (o, p, v) => { const ks = p.split('.'); let a = o; ks.slice(0, -1).forEach(k => (a = a[k])); a[ks[ks.length - 1]] = v; };
@@ -46,7 +61,11 @@ const App = {
   init() {
     this.state = this.load();
     applySettings();
-    window.addEventListener('hashchange', () => this.go());
+    // An old "#/team" link becomes /team/ before the page draws.
+    const fromHash = () => { if (location.hash.startsWith('#/')) { history.replaceState({}, '', pageUrl(location.hash) + location.search); return true; } };
+    fromHash();
+    window.addEventListener('hashchange', () => { if (fromHash()) this.go(); });
+    window.addEventListener('popstate', () => this.go());
     this.go();
     // Show the page once, gently, after the fonts and the first photo are ready,
     // instead of letting each piece pop in on its own.
@@ -130,10 +149,10 @@ const App = {
   emit(type) { this.listeners.forEach(fn => fn(type)); },
 
   go() {
-    const h = location.hash.replace(/^#\/?/, '');
-    const [name = '', param = '', sub = ''] = h.split('/').map(decodeURIComponent);
-    const changing = this.route.name !== (PAGES[name] ? name : '') || this.route.param !== param || this.route.sub !== sub;
-    this.route = { name: PAGES[name] ? name : '', param, sub };
+    const [name = '', param = '', sub = ''] = currentPath().split('/');
+    const known = PAGES[name] && name !== 'not-found' ? name : 'not-found';
+    const changing = this.route.name !== known || this.route.param !== param || this.route.sub !== sub;
+    this.route = { name: known, param, sub };
     this.render();
     scrollSiteTop();
     // A soft fade when moving to another page, so it doesn't jump.
@@ -146,8 +165,9 @@ const App = {
     const site = $('#site');
     const page = PAGES[this.route.name];
     stopHero();
-    site.innerHTML = header() + `<main id="main" tabindex="-1">${page.render(this.route.param, this.route.sub)}</main>` + footer() + stickyBar() + lightboxShell();
+    site.innerHTML = realLinks(header() + `<main id="main" tabindex="-1">${page.render(this.route.param, this.route.sub)}</main>` + footer() + stickyBar() + lightboxShell());
     document.title = page.title(this.route.param, this.route.sub) + (this.route.name ? ' | Spaces Designer Homes' : '');
+    setMeta();
     afterRender();
     this.emit('render');
   },
@@ -735,15 +755,28 @@ const PAGES = {
   'custom-homes': { title: () => 'Custom Homes', render: () => servicePage('custom') },
   additions: { title: () => 'Home Additions', render: () => servicePage('additions') },
   remodeling: { title: () => 'Remodeling', render: () => servicePage('remodel') },
-  projects: { title: (id, room) => { const h = project(id); return h ? (room && ROOMS[room] ? `${ROOMS[room]}, ${h.name}` : h.name) : 'Our Projects'; }, render: projectsPage },
+  projects: { title: (id, room) => { const h = project(id); return h ? (room && ROOMS[room] ? `${ROOMS[room]}, ${h.name}` : h.name) : 'Our Projects'; }, render: projectsPage,
+    desc: (id, room) => { const h = project(id); if (!h) return ''; const n = photosOf(h.id).length;
+      return room && ROOMS[room] ? `${ROOMS[room]} photos from ${h.name} in ${h.town}, built by Spaces Designer Homes.`
+        : `${h.name} in ${h.town}, ${{ custom: 'a custom home', addition: 'an addition', remodel: 'remodeling work' }[h.kind] || 'a home'} by Spaces Designer Homes. Walk through ${n} photos room by room.`; } },
   studio: { title: () => 'Design Studio', render: studioPage },
   about: { title: () => 'Our Story', render: aboutPage },
-  team: { title: id => { const m = T('team').find(x => x.id === id); return m ? `${m.name}, ${m.role}` : 'Our Team'; }, render: teamPage },
-  blog: { title: id => (T('posts').find(p => p.id === id) || {}).title || 'Blog', render: blogPage },
+  team: { title: id => { const m = T('team').find(x => x.id === id); return m ? `${m.name}, ${m.role}` : 'Our Team'; }, render: teamPage,
+    desc: id => { const m = T('team').find(x => x.id === id); return m ? `${m.name}, ${m.role} at Spaces Designer Homes. ${m.bio}` : ''; } },
+  blog: { title: id => (T('posts').find(p => p.id === id) || {}).title || 'Blog', render: blogPage, desc: id => (T('posts').find(p => p.id === id) || {}).excerpt },
   faq: { title: () => 'Questions', render: faqPage },
   university: { title: () => 'Spaces University', render: universityPage },
   contact: { title: () => 'Contact Us', render: () => `<div class="contact-page">${contactBlock()}</div>` },
+  'not-found': { title: () => 'Page not found', render: notFoundPage },
 };
+
+function notFoundPage() {
+  return `<section class="sec not-found" data-sec="not-found" data-label="Page not found">
+    <h1 class="h-lg">We could not find that page</h1>
+    <p class="lede">It may have moved, or the address has a typo. These will get you back on track.</p>
+    <p class="big-actions"><a class="btn btn-solid" href="#/">Go to the home page</a><a class="btn btn-line" href="#/projects">See our homes</a><a class="btn btn-line" href="#/contact">Contact us</a></p>
+  </section>`;
+}
 
 /* ---------- behaviour after each render ---------- */
 let heroTimer = null;
@@ -940,7 +973,7 @@ function bindSite() {
     // Team editing
     if (t.closest('.add-member')) { App.change(s => s.content.team.push({ id: 'person-' + Date.now().toString(36), name: 'New team member', role: 'Role', photo: '', bio: 'A short, friendly bio goes here.', email: s.content.biz.email })); toast('Added. Click the new name to edit it.'); return; }
     const rm = t.closest('[data-remove-member]');
-    if (rm) { const i = +rm.dataset.removeMember; App.change(s => s.content.team.splice(i, 1)); location.hash = '#/team'; toast('Removed. Use Undo if that was a mistake.'); return; }
+    if (rm) { const i = +rm.dataset.removeMember; App.change(s => s.content.team.splice(i, 1)); navigate('team'); toast('Removed. Use Undo if that was a mistake.'); return; }
     // Skip link inside site not needed; anchors are routes.
   });
   site.addEventListener('submit', e => {
@@ -965,6 +998,34 @@ function bindSite() {
   window.addEventListener('scroll', onScroll, { passive: true });
   site.addEventListener('scroll', onScroll, { passive: true });
   $('.skip').addEventListener('click', e => { e.preventDefault(); $('#main').focus(); });
+  // Links to other pages of the site open without a reload. Files, new tabs and other sites work as usual.
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href]');
+    if (!a || a.target || a.hasAttribute('download')) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || !url.pathname.startsWith(BASE) || /\.[a-z0-9]+$/i.test(url.pathname)) return;
+    e.preventDefault();
+    navigate(url.pathname.slice(BASE.length));
+  });
+}
+
+/* Title, description, address and share photo for the page on screen. The build script saves these
+   into each page's file, so search and answer engines see them without running any code. */
+function setMeta() {
+  const main = $('#main');
+  const meta = (sel, attr, val) => { const el = document.head.querySelector(sel); if (el && val) el.setAttribute(attr, val); };
+  const here = location.origin + pageUrl(currentPath());
+  const pg = PAGES[App.route.name];
+  const lede = $('.lede', main) || $('p', main);
+  const desc = !App.route.name ? '' : ((pg.desc && pg.desc(App.route.param, App.route.sub)) || (lede ? lede.textContent : '')).trim().replace(/\s+/g, ' ');
+  const img = App.route.name && $('img[data-full], .post-photo img', main);
+  meta('meta[name="description"]', 'content', desc && (desc.length > 158 ? desc.slice(0, 155).replace(/\s+\S*$/, '') + '…' : desc));
+  meta('meta[property="og:description"]', 'content', desc);
+  meta('meta[property="og:title"]', 'content', document.title);
+  meta('meta[property="og:url"]', 'content', here);
+  meta('link[rel="canonical"]', 'href', here);
+  if (img) meta('meta[property="og:image"]', 'content', new URL(img.dataset.full || img.getAttribute('src'), document.baseURI).href);
 }
 
 const inFrame = () => document.body.classList.contains('device-phone') || document.body.classList.contains('device-tablet');

@@ -499,7 +499,8 @@ body.editing-words p.edit-only { display: block !important; }
 @container site (min-width: 760px) { .room-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; } .room-tile { aspect-ratio: 4/3; } }
 .room-chips { margin-bottom: 24px; }
 .room-chips small { opacity: .6; margin-left: 4px; }
-.hub { padding-top: calc(var(--hdr) + var(--hdr-top) + 48px); }
+.hub, .not-found { padding-top: calc(var(--hdr) + var(--hdr-top) + 48px); }
+.not-found { min-height: 60vh; }
 @container site (min-width: 1000px) { .site .hub-grid .path:nth-child(n) { grid-column: span 4; aspect-ratio: 4/5; } .hub-grid .path-label { font-size: 1.9em; } }
 
 /* ---------- headline style (cog) ---------- */
