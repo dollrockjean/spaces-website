@@ -380,10 +380,13 @@ h3 { font-family: var(--f-body); font-weight: 600; font-size: 1.06em; line-heigh
 .mo img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; }
 .mo:first-child { grid-column: 1 / -1; }
 .mo:first-child img { aspect-ratio: 16/9; }
+.mo:nth-child(even):last-child { grid-column: 1 / -1; }
+.mo:nth-child(even):last-child img { aspect-ratio: 16/9; }
 @container site (min-width: 900px) {
-  .mosaic { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 260px; gap: 14px; }
+  .mosaic { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 260px; gap: 14px; }
   .mo img { aspect-ratio: auto; }
   .mo:first-child { grid-column: span 2; grid-row: span 2; }
+  .mo:nth-child(even):last-child { grid-column: auto; }
 }
 
 /* Projects search */

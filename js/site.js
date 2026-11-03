@@ -478,6 +478,13 @@ function pageHero(key, title, lead) {
   </section>`;
 }
 
+/* A page's photo group, with a heading so it never looks pasted on. Six photos fill the grid exactly. */
+function photoGroup(key) {
+  const pg = T(`pages.${key}`);
+  return `<div class="sec-head">${E(`pages.${key}.galleryTitle`, 'h2', 'h-md')}${E(`pages.${key}.galleryNote`, 'p')}</div>
+    <div class="mosaic">${pg.gallery.map((id, i) => `<button type="button" class="mo" data-lb="${i}">${I(`content.pages.${key}.gallery.${i}`, '', false, i ? SIZES.third : SIZES.half)}</button>`).join('')}</div>`;
+}
+
 function servicePage(key) {
   const pg = T(`pages.${key}`);
   return pageHero(key) + `
@@ -486,7 +493,7 @@ function servicePage(key) {
     <ul class="checks">${pg.points.map((p, i) => `<li data-edit="content.pages.${key}.points.${i}">${esc(p)}</li>`).join('')}</ul>
   </section>
   <section class="sec gallery-sec" data-sec="svc-gallery" data-label="Page photos">
-    <div class="mosaic">${pg.gallery.map((id, i) => `<button type="button" class="mo" data-lb="${i}">${I(`content.pages.${key}.gallery.${i}`, '', false, i ? SIZES.third : SIZES.half)}</button>`).join('')}</div>
+    ${photoGroup(key)}
     <p class="sec-more">${link('projects', 'See every project', 'btn btn-line')}</p>
   </section>` + SECTION_RENDER.process() + contactBlock();
 }
@@ -704,7 +711,7 @@ function studioPage() {
     <ol class="steps four">${pg.steps.map((st, i) => `<li>${drawing(['vision', 'plan', 'swatch', 'sign'][i] || 'plan')}<span class="step-n">Step ${i + 1}</span><h3 data-edit="content.pages.studio.steps.${i}.title">${esc(st.title)}</h3><p data-edit="content.pages.studio.steps.${i}.text">${esc(st.text)}</p></li>`).join('')}</ol>
   </section>
   <section class="sec gallery-sec" data-sec="studio-gallery" data-label="Studio photos">
-    <div class="mosaic">${pg.gallery.map((id, i) => `<button type="button" class="mo" data-lb="${i}">${I(`content.pages.studio.gallery.${i}`, '', false, i ? SIZES.third : SIZES.half)}</button>`).join('')}</div>
+    ${photoGroup('studio')}
   </section>` + contactBlock();
 }
 

@@ -376,6 +376,7 @@ const DEFAULT_CONTENT = {
       photo: 'farm-front',
       body: 'Whether you have a few saved photos or a full plan, our in-house design team builds a fully custom 2D and 3D model of your home, so you can see it before a single board is cut. One team stays with you from contract to completion, and our direct-source pricing means no middleman markups and no hidden fees.',
       points: ['In-house design with 2D and 3D models', 'Real pricing before you commit', 'One team from first meeting to move-in', 'Keyholder care for as long as you own the home'],
+      galleryTitle: 'Inside our custom homes', galleryNote: 'A few rooms from homes we designed and built.',
       gallery: ['fennville-island', 'farm-living', 'lowell-kitchen', 'southhaven-loft', 'farm-bath', 'muskegon-living'],
     },
     additions: {
@@ -383,6 +384,7 @@ const DEFAULT_CONTENT = {
       photo: 'pool-wide',
       body: 'A sunroom, a primary suite, a bigger kitchen or a pool house. We design additions that look like they were always there, matching rooflines, materials and the feel of your home, and we plan the build around your family’s life.',
       points: ['Designs that match your home', 'Sunrooms, suites, garages and pool houses', 'Clear plan for living at home during the build', 'Permits and inspections handled for you'],
+      galleryTitle: 'Additions we have built', galleryNote: 'Pool houses, sunrooms and porches made to match the home.',
       gallery: ['pool-house', 'pool-living', 'sunroom', 'pool-deck', 'fennville-porch', 'lowell-porch'],
     },
     remodel: {
@@ -390,6 +392,7 @@ const DEFAULT_CONTENT = {
       photo: 'remodel-kitchen',
       body: 'From one bathroom to a whole home, we plan and build remodels start to finish. Your personal designer helps you choose every material, and we are honest about what it costs before we begin. Prefer to do some of it yourself? We will gladly follow your lead.',
       points: ['Kitchens and baths', 'Laundry rooms, mudrooms and pantries', 'Whole-home renovations', 'Your own designer for every selection'],
+      galleryTitle: 'Recent remodels', galleryNote: 'Kitchens, baths, mudrooms and more.',
       gallery: ['remodel-kitchen', 'remodel-bath', 'remodel-shower', 'remodel-mud', 'remodel-laundry', 'remodel-pantry'],
     },
     studio: {
@@ -403,7 +406,8 @@ const DEFAULT_CONTENT = {
         { title: 'Sign off with confidence', text: 'You approve every choice and its price before we order a thing.' },
       ],
       materials: ['Cabinetry', 'Hardware', 'Flooring', 'Lighting', 'Countertops', 'Tile & backsplash', 'Plumbing fixtures', 'Paint & trim'],
-      gallery: ['farm-island', 'farm-mudroom', 'studio-samples', 'holland-wall'],
+      galleryTitle: 'Finishes from homes we built', galleryNote: 'Cabinets, tile, lighting and counters, the kind of choices you make in the studio.',
+      gallery: ['studio-samples', 'farm-island', 'fennville-bath', 'springlake-shower', 'fennville-kitchen', 'farm-mudroom'],
     },
     about: {
       title: 'Our Story', lead: 'Building the home is the beginning of the story, not the end.',
