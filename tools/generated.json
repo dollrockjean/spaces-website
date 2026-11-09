@@ -87,5 +87,6 @@
  "404.html",
  "sitemap.xml",
  "robots.txt",
+ "llms.txt",
  ".nojekyll"
 ]

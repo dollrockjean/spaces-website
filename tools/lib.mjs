@@ -25,10 +25,15 @@ export function page({ base, site, index }) {
     .replaceAll('{{ROBOTS}}', index ? '' : '<meta name="robots" content="noindex">\n');
 }
 
+/* The site's default words and photos from js/data.js, read without a browser. */
+export function siteData() {
+  const ctx = vm.createContext({});
+  return vm.runInContext(read('js/data.js') + '\n;({ IMG, PHOTOS, PROJECTS, CATS, KINDS, DEFAULT_CONTENT })', ctx);
+}
+
 /* Every page address the site has, worked out from js/data.js. room: true for the small room-by-room pages. */
 export function routes() {
-  const ctx = vm.createContext({});
-  const d = vm.runInContext(read('js/data.js') + '\n;({ PHOTOS, PROJECTS, CATS, DEFAULT_CONTENT })', ctx);
+  const d = siteData();
   const list = ['', 'build', 'about-us', 'custom-homes', 'additions', 'remodeling', 'projects', 'studio', 'about', 'team', 'blog', 'faq', 'university', 'contact']
     .map(p => ({ path: p }));
   d.PROJECTS.forEach(h => {

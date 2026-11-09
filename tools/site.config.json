@@ -1,5 +1,5 @@
 {
-  "_help": "Preview on GitHub Pages. At launch on the real domain change to: origin https://spacesdesignerhomes.com, base /, index true. Then run node tools/build.mjs and push.",
+  "_help": "Preview on GitHub Pages. At launch on the real domain change to: origin https://spacesdesignerhomes.com, base /, index true, and add indexNowKey (32 random letters and numbers). Then run node tools/build.mjs, push, and run node tools/indexnow.mjs.",
   "origin": "https://dollrockjean.github.io",
   "base": "/spaces-website/",
   "index": false
