@@ -173,6 +173,7 @@ const SECTIONS = {
   video: 'Client video & reviews',
   convictions: 'What we believe',
   studio: 'Design Studio',
+  awards: 'Award & ratings',
   blog: 'From the blog',
   contact: 'Contact us',
 };
@@ -225,7 +226,7 @@ const DEFAULT_SETTINGS = {
   clientVideo: '',
   voice: 'you',
   spotlight: 'lake',
-  homeOrder: ['trust', 'intro', 'paths', 'featured', 'process', 'video', 'convictions', 'studio', 'blog', 'contact'],
+  homeOrder: ['trust', 'awards', 'intro', 'paths', 'featured', 'process', 'video', 'convictions', 'studio', 'blog', 'contact'],
   homeHidden: [],
 };
 
@@ -296,7 +297,7 @@ const DEFAULT_CONTENT = {
     items: [
       { icon: 'build', title: 'One team, start to finish', text: 'The people who design your home are the people who build it.' },
       { icon: 'plan', title: 'Real numbers first', text: 'Your price reflects decisions you made, not assumptions someone buried.' },
-      { icon: 'home', title: 'Built on referrals', text: 'A West Michigan builder since 2017 that grows mostly by word of mouth.' },
+      { icon: 'home', title: 'Built on referrals', text: 'Spaces since 2017, led by a builder working in West Michigan since 2010. We grow mostly by word of mouth.' },
       { icon: 'key', title: 'Keyholder care', text: 'Seasonal check-ins and a direct line for as long as you own your home.' },
     ],
   },
@@ -323,8 +324,8 @@ const DEFAULT_CONTENT = {
       { title: 'Vision', text: 'We get to know your goals, your lot and your budget, then map out the road ahead before you commit to anything.' },
       { title: 'Plan & Budget', text: 'Our designers turn your ideas into a home with 2D and 3D plans, and put real numbers behind every choice.' },
       { title: 'Guided Selections', text: 'Choose finishes in our Design Studio, or let us bring samples to you. As simple or as detailed as you like.' },
-      { title: 'Construction', text: 'A whole team, not one project manager, keeps your build moving. You are welcome on site the whole way.' },
-      { title: 'Keyholder', text: 'Move-in is not goodbye. Seasonal check-ins, a one-year walkthrough and a direct line to the people who built your home.' },
+      { title: 'Construction', text: 'About 8 months of building. A whole team, not one project manager, keeps it moving, and you are welcome on site the whole way.' },
+      { title: 'Keyholder', text: 'Move-in is not goodbye. A 12-month warranty, seasonal check-ins, a one-year walkthrough and a direct line to the people who built your home.' },
     ],
   },
   video: {
@@ -338,9 +339,9 @@ const DEFAULT_CONTENT = {
     { name: 'J. Black', text: 'Their versatile team listens to your family’s wants and needs, then offers creative ideas to help make the home of your dreams real. We couldn’t be happier.' },
     { name: 'S. Soderberg', text: 'Not only did they build a beautiful home, they made the process easy, timely and within budget. True professionals.' },
     { name: 'V. Hughes', text: 'It feels like a dream… but our dream came true. Thank you Spaces Designer Homes and the entire team, our home is perfect!' },
-    { name: 'Rich and Veronica Hughs', text: 'Spaces has the best team on board, from the front lines on site work to everyone keeping everything within budget, and the best communication. Everyone we met during the build became like family.' },
+    { name: 'R. and V. H.', text: 'Spaces has the best team on board, from the front lines on site work to everyone keeping everything within budget, and the best communication. Everyone we met during the build became like family.' },
     { name: 'R. Martemucci', text: 'We really enjoyed working with Spaces to remodel our home. We referred them to our friends!' },
-    { name: 'Jamie Lynn', text: 'Beth is the best to work with. So incredibly helpful and inspiring. Highly recommend.' },
+    { name: 'J. Lynn', text: 'Beth is the best to work with. So incredibly helpful and inspiring. Highly recommend.' },
   ],
   convictions: {
     title: 'What we believe',
@@ -420,9 +421,29 @@ const DEFAULT_CONTENT = {
       body: 'Free classes and guides for anyone thinking about building or remodeling: how budgets really work, how to pick a lot, what to ask any builder, and more. Leave your email and we will tell you when the first class opens.',
     },
   },
+  /* Awards page. Wording from the BBB award photo file (2026-11-18). Ratings from Rocco (2026-11-18).
+     Award photos: put the files in assets/img/awards/ and list them in photos as { src, alt }. */
+  awards: {
+    title: 'Awards & Recognition',
+    lead: 'Recognized for the way we do business, not just the homes we build.',
+    award: '2026 BBB Torch Award for Ethics winner',
+    awardDetail: 'Category II, BBB Serving Western Michigan',
+    awardText: 'The Torch Award for Ethics is given by the Better Business Bureau to businesses for ethical practices. We are proud to have won it in 2026. For a builder, it comes down to keeping our word: honest numbers, no surprises, and the same care behind the walls as in the parts you can see.',
+    photosTitle: 'From the awards',
+    photosNote: 'Photos from the 2026 BBB Torch Awards for Ethics.',
+    photos: [],
+    proofTitle: 'Ratings and memberships',
+    proof: [
+      { big: '4.4', label: 'stars on Google' },
+      { big: '5.0', label: 'stars on Houzz' },
+      { big: 'BBB', label: 'Accredited member' },
+      { big: 'HBA', label: 'Home Builders Association member' },
+    ],
+    stripText: 'Recognized by the Better Business Bureau for ethics, and rated by the families we build for.',
+  },
   /* Names and titles from Tim Lamson (2026-10-26). Alphabetical by last name for now. */
   team: [
-    { id: 'tracy', name: 'Tracy Anderson', role: 'Founder / Owner', photo: '', bio: 'Tracy founded Spaces and stays personally involved in every home, from the first design meeting to the final walkthrough.', email: 'info@spacesdesignerhomes.com' },
+    { id: 'tracy', name: 'Tracy Anderson', role: 'Founder / Owner', photo: '', bio: 'Tracy has been building homes since 2010 and started Spaces in 2017. Tracy stays personally involved in every home, from the first design meeting to the final walkthrough.', email: 'info@spacesdesignerhomes.com' },
     { id: 'beth', name: 'Beth Buskard', role: 'Design Selections Coordinator', photo: '', bio: 'Beth helps homeowners choose every finish in the Design Studio. Clients call her “so incredibly helpful and inspiring.”', email: 'info@spacesdesignerhomes.com' },
     { id: 'bill', name: 'Bill Jarman', role: 'Construction Superintendent', photo: '', bio: 'Bill keeps builds on schedule and on budget, and makes sure the work behind the walls is done right.', email: 'info@spacesdesignerhomes.com' },
     { id: 'tim', name: 'Tim Lamson', role: 'Sales & Marketing', photo: '', bio: 'Tim leads sales and marketing at Spaces, and is glad to answer your first questions about building with us.', email: 'info@spacesdesignerhomes.com' },
@@ -431,9 +452,14 @@ const DEFAULT_CONTENT = {
   ],
   faq: [
     { q: 'How much does a custom home cost in West Michigan?', a: 'A nicely appointed 3,000 square foot custom home typically runs around $750,000 all-in, including design, site costs and finishes. We give you a clear picture of where your budget goes before you commit to anything.' },
-    { q: 'How long does it take to build?', a: 'Plan on 8 to 12 months of construction for a fully custom home, with design and selections adding time up front depending on how quickly decisions come together.' },
-    { q: 'Do you charge by the square foot?', a: 'No. We price what actually goes into the home, not just the footprint, and break it down in plain numbers.' },
-    { q: 'Do you do additions and remodels too?', a: 'Yes. Kitchens, baths, additions and whole-home renovations, at all price points.' },
+    { q: 'How long does it take to build?', a: 'Construction takes about 8 months for a fully custom home in West Michigan. Design and selections add time up front, depending on how quickly decisions come together.' },
+    { q: 'Do you charge by the square foot?', a: 'No. We quote each home on what your family needs, not by the square foot, and break it down in plain numbers.' },
+    { q: 'Do you do additions and remodels too?', a: 'Yes. Kitchens, baths, additions and whole-home renovations, at all price points. There is no minimum budget.' },
+    { q: 'Is design included in the price?', a: 'Yes. Design selections are included in the build price. Your Design Selections Coordinator walks you through every finish at our Grand Rapids Design Studio.' },
+    { q: 'What warranty comes with a Spaces home?', a: 'Every new Spaces home comes with a 12-month warranty. After that, our Keyholder Program keeps us in touch for as long as you own the home.' },
+    { q: 'Where in West Michigan do you build?', a: 'All over West Michigan, from Grand Rapids to the lakeshore. Past homes include Grand Rapids, Holland, Saugatuck, Lowell, Spring Lake, Muskegon, South Haven and Fennville.' },
+    { q: 'How many homes do you build a year?', a: 'About 8 to 10 homes a year across West Michigan, plus additions and remodels. Spaces has been building since 2017, led by a builder working since 2010.' },
+    { q: 'Are you insured and accredited?', a: 'Yes. Spaces is fully insured, a BBB Accredited member and a member of the Home Builders Association. We won the 2026 BBB Torch Award for Ethics, Category II, from BBB Serving Western Michigan.' },
     { q: 'Can I visit the job site?', a: 'Yes, and we encourage it. We just ask that visits be scheduled with our construction team for safety.' },
     { q: 'What happens after I move in?', a: 'Our Keyholder Program: seasonal check-ins, a one-year walkthrough we schedule for you, and a direct line to the people who built your home for as long as you own it.' },
   ],

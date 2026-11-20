@@ -22,6 +22,10 @@ Run `node tools/build.mjs` (first time on a computer: `npm install --prefix tool
 ## Taking in a client's version
 In the cog panel, open **Save & Send**, then **Open a version file**, and pick the `.json` file they sent. Their notes show in the **Notes** tab, with pins on the page.
 
+## Awards page
+- `/awards/` (About menu, footer, and a strip on the home and Our Story pages). Words and ratings: `awards` in `js/data.js`.
+- Award photos: copy them into `assets/img/awards/` (hidden data stripped, no client names in file names), then list each in `awards.photos` as `{ src: 'file.jpg', alt: 'what it shows' }` and run the build. The photo section stays hidden until at least one photo is listed.
+
 ## Before launch
 - Switch on the contact form: `contact-form/SETUP.md` (private, add-only Google Sheet).
 - In `tools/site.config.json` set origin `https://spacesdesignerhomes.com`, base `/`, index `true`, run the build, push, and point the domain at GitHub Pages (CNAME). The preview stays hidden from search until then.

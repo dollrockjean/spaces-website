@@ -216,6 +216,7 @@ const DRAW = {
   build: '<path d="M8 31 32 11l24 20"/><path class="g" d="M16.5 24V14h6v5"/><path d="M14 27v26h36V27"/><path d="M23 27v26M32 27v26M41 27v26"/><path class="g" d="M14 40h36"/><path d="M8 53h48"/>',
   key: '<circle cx="19" cy="32" r="15.5"/><path class="g" d="M10.5 35 19 27.2l8.5 7.8"/><path class="g" d="M13.3 30.6V26h3.3v2"/><path d="M13 33.6V41h12v-7.4"/><path d="M34.5 32H60"/><path d="M39 27.5v9"/><path d="M51 32v9.5M57 32v7"/>',
   home: '<path class="g" d="M5 41 16 31.5 27 41"/><path d="M8 38.5V53h16V38.5"/><path d="M29 35.5 44 22.5l15 13"/><path d="M33 32v21h22V32"/><path d="M48.5 27.3V20h4.5v4"/><path class="g" d="M14 26c2-10 13-15 23-11"/><path class="g" d="m33.5 12.5 3.6 2.6-2.4 3.8"/><path d="M4 53h56"/>',
+  torch: '<path class="g" d="M32 5c5.5 6 8.5 10.5 8.5 15.5a8.5 8.5 0 0 1-17 0c0-3.2 1.6-5.8 3.6-7.8.3 3 1.7 5 3.7 5.7-1-4.2 0-9 1.2-13.4Z"/><path d="M20 31h24l-4.5 8h-15Z"/><path d="m26.5 39 2.3 20h6.4l2.3-20"/><path d="M8 59h48"/>',
   sign: '<path d="M15 7h25l11 11v39H15Z"/><path d="M40 7v11h11"/><path d="M22 22h12M22 29h20"/><path class="g" d="m23 42 6 6 13-14"/>',
 };
 const drawing = k => `<svg class="draw" viewBox="0 0 64 64" aria-hidden="true">${DRAW[k]}</svg>`;
@@ -237,7 +238,7 @@ const NAV = [
   { label: 'Build', hub: 'build', kids: [['custom-homes', 'Custom Homes'], ['additions', 'Additions'], ['remodeling', 'Remodeling']] },
   { label: 'Our Projects', route: 'projects' },
   { label: 'Design Studio', route: 'studio' },
-  { label: 'About', hub: 'about-us', kids: [['about', 'Our Story'], ['team', 'Our Team'], ['faq', 'Questions']] },
+  { label: 'About', hub: 'about-us', kids: [['about', 'Our Story'], ['team', 'Our Team'], ['awards', 'Awards'], ['faq', 'Questions']] },
   { label: 'Blog', route: 'blog' },
   { label: 'University', route: 'university', soon: true },
 ];
@@ -274,7 +275,7 @@ function footer() {
       <div class="ftr-cols">
         <div><h3>Build</h3><ul><li>${link('custom-homes', 'Custom Homes')}</li><li>${link('additions', 'Additions')}</li><li>${link('remodeling', 'Remodeling')}</li><li>${link('studio', 'Design Studio')}</li></ul></div>
         <div><h3>Explore</h3><ul><li>${link('projects', 'Our Projects')}</li><li>${link('blog', 'Blog')}</li><li>${link('university', 'Spaces University')}</li><li>${link('faq', 'Questions')}</li></ul></div>
-        <div><h3>About</h3><ul><li>${link('about', 'Our Story')}</li><li>${link('team', 'Our Team')}</li>${T('team').map(m => `<li>${link('team/' + m.id, esc(m.name))}</li>`).join('')}</ul></div>
+        <div><h3>About</h3><ul><li>${link('about', 'Our Story')}</li><li>${link('team', 'Our Team')}</li><li>${link('awards', 'Awards')}</li>${T('team').map(m => `<li>${link('team/' + m.id, esc(m.name))}</li>`).join('')}</ul></div>
         <div><h3>Reach us</h3><ul class="reach">
           <li><a href="tel:${T('biz.phone').replace(/\D/g, '')}">${E('biz.phone')}</a></li>
           <li><a href="mailto:${esc(T('biz.email'))}">${E('biz.email')}</a></li>
@@ -285,7 +286,7 @@ function footer() {
     </div>
     <div class="ftr-bottom">
       <p class="ftr-tag">${E('footer.tagline')}</p>
-      <p>© ${new Date().getFullYear()} Spaces Designer Homes LLC. BBB Accredited Business. Serving Grand Rapids, Holland, Saugatuck, Lowell, Spring Lake, Muskegon and the lakeshore.</p>
+      <p>© ${new Date().getFullYear()} Spaces Designer Homes LLC. BBB Accredited Business. ${link('awards', esc(T('awards.award')) + ', ' + esc(T('awards.awardDetail')), 'ftr-award')}. Serving Grand Rapids, Holland, Saugatuck, Lowell, Spring Lake, Muskegon and the lakeshore.</p>
     </div>
   </footer>`;
 }
@@ -367,6 +368,12 @@ const SECTION_RENDER = {
   trust() {
     return `<section class="sec trust" data-sec="trust" data-label="Why families choose us">
       <ul class="trust-list">${T('trust.items').map((t, i) => `<li>${drawing(DRAW[t.icon] ? t.icon : 'home')}<div><h3 data-edit="content.trust.items.${i}.title">${esc(t.title)}</h3><p data-edit="content.trust.items.${i}.text">${esc(t.text)}</p></div></li>`).join('')}</ul>
+    </section>`;
+  },
+  awards() {
+    return `<section class="sec award-strip" data-sec="awards" data-label="Award & ratings">
+      <a class="award-badge" href="#/awards">${drawing('torch')}<span><strong data-edit="content.awards.award">${esc(T('awards.award'))}</strong><small data-edit="content.awards.awardDetail">${esc(T('awards.awardDetail'))}</small></span></a>
+      ${proofList()}
     </section>`;
   },
   intro() {
@@ -721,7 +728,29 @@ function aboutPage() {
     <h2 class="h-md">Our story</h2>${E('pages.about.body', 'p', 'lede')}
     <h2 class="h-md">Our mission</h2>${E('pages.about.mission', 'p', 'lede')}
     <p class="intro-links">${link('team', 'Meet the team')}${link('faq', 'Common questions')}</p>
-  </section>` + SECTION_RENDER.convictions() + SECTION_RENDER.video() + contactBlock();
+  </section>` + SECTION_RENDER.awards() + SECTION_RENDER.convictions() + SECTION_RENDER.video() + contactBlock();
+}
+
+const proofList = () => `<ul class="proof">${T('awards.proof').map((x, i) => `<li><span class="proof-big" data-edit="content.awards.proof.${i}.big">${esc(x.big)}</span><span class="proof-label" data-edit="content.awards.proof.${i}.label">${esc(x.label)}</span></li>`).join('')}</ul>`;
+
+/* Awards: Tim asked for the award photos on their own page (2026-11-18). Photos live in assets/img/awards/. */
+function awardsPage() {
+  const photos = T('awards.photos') || [];
+  return `<section class="sec awards" data-sec="awards-top" data-label="Awards">
+    ${E('awards.title', 'h1', 'h-lg')}${E('awards.lead', 'p', 'lede')}
+    <div class="award-card">
+      ${drawing('torch')}
+      <div>${E('awards.award', 'h2', 'h-md')}${E('awards.awardDetail', 'p', 'award-detail')}${E('awards.awardText', 'p')}</div>
+    </div>
+  </section>
+  ${photos.length ? `<section class="sec gallery-sec" data-sec="award-photos" data-label="Award photos">
+    <div class="sec-head">${E('awards.photosTitle', 'h2', 'h-md')}${E('awards.photosNote', 'p')}</div>
+    <div class="award-photos">${photos.map((ph, i) => `<button type="button" class="mo" data-lb="${i}"><img src="${IMG}awards/${esc(ph.src)}" alt="${esc(ph.alt || T('awards.award'))}" loading="lazy"></button>`).join('')}</div>
+  </section>` : ''}
+  <section class="sec awards-proof" data-sec="awards-proof" data-label="Ratings and memberships">
+    ${E('awards.proofTitle', 'h2', 'h-md')}${proofList()}
+    <p class="intro-links">${link('about', 'Read our story')}${link('faq', 'Common questions')}</p>
+  </section>` + contactBlock();
 }
 
 function faqPage() {
@@ -742,7 +771,7 @@ function universityPage() {
 /* Overview pages for the Build and About menu headings. */
 const HUB_ART = {
   'custom-homes': ['farm-front', 'Built from your ideas, start to finish'], additions: ['pool-house', 'More room, without moving'], remodeling: ['remodel-kitchen', 'Kitchens, baths and whole homes'],
-  about: ['wooded-drive', 'How Spaces started and what we stand for'], team: ['farm-entry', 'The people who will build with you'], faq: ['fennville-living', 'Straight answers about cost and timing'],
+  about: ['wooded-drive', 'How Spaces started and what we stand for'], team: ['farm-entry', 'The people who will build with you'], awards: ['saugatuck-front', '2026 BBB Torch Award for Ethics winner'], faq: ['fennville-living', 'Straight answers about cost and timing'],
 };
 function hubPage(key) {
   const n = NAV.find(x => x.hub === key);
@@ -771,6 +800,7 @@ const PAGES = {
   team: { title: id => { const m = T('team').find(x => x.id === id); return m ? `${m.name}, ${m.role}` : 'Our Team'; }, render: teamPage,
     desc: id => { const m = T('team').find(x => x.id === id); return m ? `${m.name}, ${m.role} at Spaces Designer Homes. ${m.bio}` : ''; } },
   blog: { title: id => (T('posts').find(p => p.id === id) || {}).title || 'Blog', render: blogPage, desc: id => (T('posts').find(p => p.id === id) || {}).excerpt },
+  awards: { title: () => 'Awards', render: awardsPage, desc: () => `${T('awards.award')}, ${T('awards.awardDetail')}. Spaces Designer Homes is rated 4.4 on Google and 5.0 on Houzz.` },
   faq: { title: () => 'Questions', render: faqPage },
   university: { title: () => 'Spaces University', render: universityPage },
   contact: { title: () => 'Contact Us', render: () => `<div class="contact-page">${contactBlock()}</div>` },

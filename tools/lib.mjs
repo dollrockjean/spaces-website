@@ -34,7 +34,7 @@ export function siteData() {
 /* Every page address the site has, worked out from js/data.js. room: true for the small room-by-room pages. */
 export function routes() {
   const d = siteData();
-  const list = ['', 'build', 'about-us', 'custom-homes', 'additions', 'remodeling', 'projects', 'studio', 'about', 'team', 'blog', 'faq', 'university', 'contact']
+  const list = ['', 'build', 'about-us', 'custom-homes', 'additions', 'remodeling', 'projects', 'studio', 'about', 'team', 'awards', 'blog', 'faq', 'university', 'contact']
     .map(p => ({ path: p }));
   d.PROJECTS.forEach(h => {
     const photos = d.PHOTOS.filter(p => p.project === h.id);

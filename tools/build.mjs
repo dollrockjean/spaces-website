@@ -99,10 +99,12 @@ ${C.voice.facts.introBody.replace(/\s*Every photo on this page[^.]*\./, '')}
 - Phone: ${C.biz.phone}
 - Email: ${C.biz.email}
 - Studio: ${C.biz.street}, ${C.biz.city}
+- Award: ${C.awards.award}, ${C.awards.awardDetail}
+- Ratings: ${C.awards.proof.slice(0, 2).map(x => `${x.big} ${x.label}`).join(', ')}
 
 ## Main pages
 
-${['custom-homes', 'additions', 'remodeling', 'studio', 'projects', 'about', 'team', 'faq', 'blog', 'contact'].map(line).join('\n')}
+${['custom-homes', 'additions', 'remodeling', 'studio', 'projects', 'about', 'team', 'awards', 'faq', 'blog', 'contact'].map(line).join('\n')}
 
 ## Common questions
 

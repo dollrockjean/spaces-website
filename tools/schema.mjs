@@ -73,6 +73,8 @@ export function schemaFor(path, d, SITE, pages) {
       '@type': 'Service', name: pg.title, serviceType: pg.title, description: pg.body,
       url: url(path), image: img(pg.photo), provider: biz,
     });
+  } else if (top === 'awards') {
+    out.push({ '@type': 'AboutPage', name: clean(here.title), description: here.desc, url: url(path), about: biz });
   } else if (top === 'about' || top === 'about-us') {
     out.push({ '@type': 'AboutPage', name: clean(here.title), url: url(path), about: biz });
   } else if (top === 'contact') {

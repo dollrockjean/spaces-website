@@ -7,6 +7,8 @@ Spaces Designer Homes designs and builds fully custom homes, additions and remod
 - Phone: 616-682-7119
 - Email: info@spacesdesignerhomes.com
 - Studio: 3624 29th St SE, #A, Grand Rapids, Michigan 49512
+- Award: 2026 BBB Torch Award for Ethics winner, Category II, BBB Serving Western Michigan
+- Ratings: 4.4 stars on Google, 5.0 stars on Houzz
 
 ## Main pages
 
@@ -17,6 +19,7 @@ Spaces Designer Homes designs and builds fully custom homes, additions and remod
 - [Our Projects](https://dollrockjean.github.io/spaces-website/projects/): Every home here is a real Spaces home. Open one to walk through it room by room.
 - [Our Story](https://dollrockjean.github.io/spaces-website/about/): Spaces Designer Homes built its name by staying flexible through years that closed other builders’ doors, and by never settling on who we could become.…
 - [Our Team](https://dollrockjean.github.io/spaces-website/team/): One team stays with you from the first conversation to the keys, and long after. No rotating cast, no phone tree.
+- [Awards](https://dollrockjean.github.io/spaces-website/awards/): 2026 BBB Torch Award for Ethics winner, Category II, BBB Serving Western Michigan. Spaces Designer Homes is rated 4.4 on Google and 5.0 on Houzz.
 - [Questions](https://dollrockjean.github.io/spaces-website/faq/): Straight answers. If yours is not here, just ask.
 - [Blog](https://dollrockjean.github.io/spaces-website/blog/): Plain answers about building, remodeling and living well in West Michigan. Video posts are on the way.
 - [Contact Us](https://dollrockjean.github.io/spaces-website/contact/): A conversation, not a sales pitch. Share a little about what you're picturing and we'll reach out to set up a time to talk.
@@ -29,15 +32,35 @@ A nicely appointed 3,000 square foot custom home typically runs around $750,000 
 
 ### How long does it take to build?
 
-Plan on 8 to 12 months of construction for a fully custom home, with design and selections adding time up front depending on how quickly decisions come together.
+Construction takes about 8 months for a fully custom home in West Michigan. Design and selections add time up front, depending on how quickly decisions come together.
 
 ### Do you charge by the square foot?
 
-No. We price what actually goes into the home, not just the footprint, and break it down in plain numbers.
+No. We quote each home on what your family needs, not by the square foot, and break it down in plain numbers.
 
 ### Do you do additions and remodels too?
 
-Yes. Kitchens, baths, additions and whole-home renovations, at all price points.
+Yes. Kitchens, baths, additions and whole-home renovations, at all price points. There is no minimum budget.
+
+### Is design included in the price?
+
+Yes. Design selections are included in the build price. Your Design Selections Coordinator walks you through every finish at our Grand Rapids Design Studio.
+
+### What warranty comes with a Spaces home?
+
+Every new Spaces home comes with a 12-month warranty. After that, our Keyholder Program keeps us in touch for as long as you own the home.
+
+### Where in West Michigan do you build?
+
+All over West Michigan, from Grand Rapids to the lakeshore. Past homes include Grand Rapids, Holland, Saugatuck, Lowell, Spring Lake, Muskegon, South Haven and Fennville.
+
+### How many homes do you build a year?
+
+About 8 to 10 homes a year across West Michigan, plus additions and remodels. Spaces has been building since 2017, led by a builder working since 2010.
+
+### Are you insured and accredited?
+
+Yes. Spaces is fully insured, a BBB Accredited member and a member of the Home Builders Association. We won the 2026 BBB Torch Award for Ethics, Category II, from BBB Serving Western Michigan.
 
 ### Can I visit the job site?
 
@@ -69,7 +92,7 @@ Our Keyholder Program: seasonal check-ins, a one-year walkthrough we schedule fo
 
 ## Team
 
-- [Tracy Anderson, Founder / Owner](https://dollrockjean.github.io/spaces-website/team/tracy/): Tracy Anderson, Founder / Owner at Spaces Designer Homes. Tracy founded Spaces and stays personally involved in every home, from the first design meeting…
+- [Tracy Anderson, Founder / Owner](https://dollrockjean.github.io/spaces-website/team/tracy/): Tracy Anderson, Founder / Owner at Spaces Designer Homes. Tracy has been building homes since 2010 and started Spaces in 2017. Tracy stays personally…
 - [Beth Buskard, Design Selections Coordinator](https://dollrockjean.github.io/spaces-website/team/beth/): Beth Buskard, Design Selections Coordinator at Spaces Designer Homes. Beth helps homeowners choose every finish in the Design Studio. Clients call her “so…
 - [Bill Jarman, Construction Superintendent](https://dollrockjean.github.io/spaces-website/team/bill/): Bill Jarman, Construction Superintendent at Spaces Designer Homes. Bill keeps builds on schedule and on budget, and makes sure the work behind the walls…
 - [Tim Lamson, Sales & Marketing](https://dollrockjean.github.io/spaces-website/team/tim/): Tim Lamson, Sales & Marketing at Spaces Designer Homes. Tim leads sales and marketing at Spaces, and is glad to answer your first questions about building…
